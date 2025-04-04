@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 9d8d5958a2eb2cf4d87b6305a7c056d4
+timeCreated: 1479756898
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76640
+  packageName: Character Monster
+  packageVersion: 1.0
+  assetPath: Assets/Character_Monster/Monster.controller
+  uploadId: 147583

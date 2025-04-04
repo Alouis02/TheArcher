@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0ad52be1891ce0c418718b9c9ae95eff
+timeCreated: 1479756790
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76640
+  packageName: Character Monster
+  packageVersion: 1.0
+  assetPath: Assets/Character_Monster/Materials/Material #1.mat
+  uploadId: 147583

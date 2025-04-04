@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5bcbf31ded2e353449622ec74f8954da
+timeCreated: 1479756889
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76640
+  packageName: Character Monster
+  packageVersion: 1.0
+  assetPath: Assets/Character_Monster/Prefab/Monster.prefab
+  uploadId: 147583
