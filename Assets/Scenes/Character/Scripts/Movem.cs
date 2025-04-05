@@ -2,105 +2,140 @@ using UnityEngine;
 
 public class Movem : MonoBehaviour
 {
-    private CharacterController playercontrol;
+    // Variables
+    [SerializeField] private float walkSpeed = 5f;
+    [SerializeField] private float runSpeed = 10f;
+
     private Vector3 velocity;
     private bool isGrounded;
 
-    [Header("Settings")]
-    [SerializeField] private float walkSpeed = 5f;
+    // Gravity and Ground Check
     [SerializeField] private float gravity = -9.81f;
     [SerializeField] private float groundCheckRadius = 0.4f;
     [SerializeField] private LayerMask groundMask;
 
-    [Header("Jumping")]
+    // Jumping
     [SerializeField] private float jumpHeight = 1.5f;
 
-    [Header("Input")]
-    private float movement;
-    private float turn;
+    // References
+    private CharacterController controller;
+    private Transform cameraTransform;
 
-    [Header("Rotation")]
-    [SerializeField] private float mouseSensitivity = 100f;
-    private float mouseX;
-    private float mouseY;
+    [SerializeField] private Transform aimPosition; // Aim target
+    [SerializeField] private float aimSpeed = 20f;
+    [SerializeField] private LayerMask aimMask;
 
-    private void Start()
+    void Start()
     {
-        playercontrol = GetComponent<CharacterController>();
-        Cursor.lockState = CursorLockMode.Locked; // Lock the cursor
-        Cursor.visible = false; // Hide cursor
+        controller = GetComponent<CharacterController>();
+        cameraTransform = Camera.main?.transform; // Safely get the camera reference
+
+        // Lock the mouse cursor
+        SetCursorState(true);
     }
 
-    private void Update()
+    void Update()
     {
-        Management();
-        Movement();
-        ApplyGravity();
-        RotateWithMouse();
+        Move();
+        UpdateAimPosition();
+        RotatePlayerToMouse();
 
         // Unlock the cursor for debugging or menus
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            SetCursorState(false);
         }
         else if (Input.GetMouseButtonDown(0)) // Re-lock cursor on left mouse click
         {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            SetCursorState(true);
         }
     }
 
-    private void Management()
-    {
-        movement = Input.GetAxis("Vertical");
-        turn = Input.GetAxis("Horizontal");
-    }
-
-    private void Movement()
+    private void Move()
     {
         // Ground Check
-        Vector3 groundCheckPosition = playercontrol.bounds.center + Vector3.down * (playercontrol.bounds.extents.y + groundCheckRadius);
+        Vector3 groundCheckPosition = controller.bounds.center + Vector3.down * (controller.bounds.extents.y + groundCheckRadius);
         isGrounded = Physics.CheckSphere(groundCheckPosition, groundCheckRadius, groundMask);
 
-        if (isGrounded && velocity.y < 0)
+        if (isGrounded)
         {
-            velocity.y = -2f; // Stabilize velocity when grounded
+            if (velocity.y < 0)
+            {
+                velocity.y = -2f; // Stabilize when grounded
+            }
+
+            // Jump logic
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Debug.Log("Jump triggered!");
+                velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            }
         }
 
-        // Jump logic
-        if (isGrounded && Input.GetKeyDown(KeyCode.Space))
+        // Input for Movement (W, A, S, D or Arrow Keys)
+        float moveX = Input.GetAxisRaw("Horizontal");
+        float moveZ = Input.GetAxisRaw("Vertical");
+
+        // Calculate movement direction relative to the camera
+        Vector3 cameraForward = Vector3.Scale(cameraTransform.forward, new Vector3(1, 0, 1)).normalized;
+        Vector3 cameraRight = Vector3.Scale(cameraTransform.right, new Vector3(1, 0, 1)).normalized;
+        Vector3 moveDir = (cameraForward * moveZ + cameraRight * moveX).normalized;
+
+        // Rotate the player to face the movement direction
+        if (moveDir.magnitude >= 0.1f)
         {
-            Debug.Log("Jump triggered!");
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            Quaternion targetRotation = Quaternion.LookRotation(moveDir);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
         }
 
-        // Movement
-        Vector3 move = new Vector3(turn, 0, movement).normalized;
-        move *= walkSpeed;
+        // Move the player
+        float speed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
+        controller.Move(moveDir * speed * Time.deltaTime);
 
-        playercontrol.Move(move * Time.deltaTime);
-    }
-
-    private void ApplyGravity()
-    {
+        // Apply gravity
         velocity.y += gravity * Time.deltaTime;
-        playercontrol.Move(velocity * Time.deltaTime);
+        controller.Move(velocity * Time.deltaTime);
     }
 
-    private void RotateWithMouse()
+    private void UpdateAimPosition()
     {
-        // Get mouse input
-        mouseX += Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        mouseY -= Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+        // Use a raycast from the center of the screen to update the aim position
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        float maxAimDistance = 100f; // Limit raycast distance
 
-        // Clamp vertical rotation to prevent full spin
-        mouseY = Mathf.Clamp(mouseY, -90f, 90f);
+        if (Physics.Raycast(ray, out RaycastHit hit, maxAimDistance, aimMask))
+        {
+            aimPosition.position = Vector3.Lerp(aimPosition.position, hit.point, aimSpeed * Time.deltaTime);
+        }
+    }
 
-        // Rotate player horizontally
-        transform.rotation = Quaternion.Euler(0f, mouseX, 0f);
+    private void RotatePlayerToMouse()
+    {
+        // Rotate the player only when the right mouse button is pressed
+        if (Input.GetMouseButton(1)) // Right mouse button
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        // Optional: Rotate camera vertically if attached as a child
-        Camera.main.transform.localRotation = Quaternion.Euler(mouseY, 0f, 0f);
+            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, aimMask))
+            {
+                Vector3 targetPosition = hit.point;
+                targetPosition.y = transform.position.y; // Keep player rotation level
+
+                Vector3 direction = (targetPosition - transform.position).normalized;
+
+                // Rotate the player to face the mouse pointer
+                if (direction.magnitude >= 0.1f)
+                {
+                    Quaternion targetRotation = Quaternion.LookRotation(direction);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+                }
+            }
+        }
+    }
+
+    private void SetCursorState(bool locked)
+    {
+        Cursor.lockState = locked ? CursorLockMode.Locked : CursorLockMode.None;
+        Cursor.visible = !locked;
     }
 }
