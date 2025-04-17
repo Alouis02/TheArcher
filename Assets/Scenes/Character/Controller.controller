@@ -159,9 +159,6 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: IsFiring 0
-    m_EventTreshold: 0
-  - m_ConditionMode: 1
     m_ConditionEvent: IsFiring
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
@@ -187,9 +184,6 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: IsFiring 0
-    m_EventTreshold: 0
-  - m_ConditionMode: 1
     m_ConditionEvent: IsFiring
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
@@ -310,7 +304,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -203655887218126122, guid: bf73e2581d2b1ef469a07e7a870b1d15, type: 3}
+  m_Motion: {fileID: -203655887218126122, guid: 3d363842747d4e94da0eb42d19ff235e, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -543,7 +537,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -203655887218126122, guid: 67aa31c2edc7d3e4cb23d24103e51a62, type: 3}
+  m_Motion: {fileID: -203655887218126122, guid: 3d363842747d4e94da0eb42d19ff235e, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -570,7 +564,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -203655887218126122, guid: 68ef3143db4270540af5e85694df4051, type: 3}
+  m_Motion: {fileID: -203655887218126122, guid: 3d363842747d4e94da0eb42d19ff235e, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -1271,9 +1265,6 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: IsFiring 0
-    m_EventTreshold: 0
-  - m_ConditionMode: 1
     m_ConditionEvent: IsFiring
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
@@ -1453,9 +1444,6 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: IsFiring 0
-    m_EventTreshold: 0
-  - m_ConditionMode: 1
     m_ConditionEvent: IsFiring
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
@@ -1585,14 +1573,8 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: IsFiring 0
-    m_Type: 4
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
   - m_Name: IsFiring
-    m_Type: 9
+    m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
