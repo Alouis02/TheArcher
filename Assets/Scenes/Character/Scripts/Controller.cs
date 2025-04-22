@@ -26,19 +26,11 @@ public class Controller : MonoBehaviour
     private int Slashing2Hash;
     private int Slashing3Hash;
 
-    // Arrow charging and shooting
-    public GameObject arrowPrefab;
-    public Transform arrowSpawnPoint;
+    // Weapon handling
     public GameObject bowObject; // Reference to bow object
-    [SerializeField] private float maxForce = 50f;
-    [SerializeField] private float chargeSpeed = 20f;
     [SerializeField] private GameObject aimCamera;
     [SerializeField] private GameObject playerAim;
-
-    private float currentForce;
-    private bool isCharging;
     private bool isWeaponEquipped = false;
-    private GameObject currentArrow;
 
     void Start()
     {
@@ -70,7 +62,6 @@ public class Controller : MonoBehaviour
     {
         HandleMovement();
         HandleActions();
-        HandleShooting();
     }
 
     void HandleMovement()
@@ -97,6 +88,7 @@ public class Controller : MonoBehaviour
         bool punch = Input.GetKeyDown("e");
         bool kick = Input.GetKeyDown("r");
         bool aim = Input.GetMouseButton(1);
+        bool fire = Input.GetMouseButton(0);
         bool swordequip = Input.GetKeyDown(KeyCode.Alpha1);
         bool swordunequip = Input.GetKey(KeyCode.LeftAlt);
         bool slash1 = Input.GetKeyDown("q");
@@ -138,42 +130,8 @@ public class Controller : MonoBehaviour
 
         // Aiming
         animate.SetBool(AimingHash, aim);
-    }
 
-    void HandleShooting()
-    {
-        if (!isWeaponEquipped || !Input.GetMouseButton(1)) return;
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            currentForce = 0f;
-            isCharging = true;
-
-            // Instantiate and hold the arrow
-            currentArrow = Instantiate(arrowPrefab, arrowSpawnPoint.position, arrowSpawnPoint.rotation);
-            currentArrow.transform.parent = arrowSpawnPoint;
-            currentArrow.GetComponent<Rigidbody>().isKinematic = true;
-        }
-
-        if (Input.GetMouseButton(0) && isCharging)
-        {
-            currentForce += chargeSpeed * Time.deltaTime;
-            currentForce = Mathf.Clamp(currentForce, 0, maxForce);
-        }
-
-        if (Input.GetMouseButtonUp(0) && isCharging)
-        {
-            if (currentArrow != null)
-            {
-                currentArrow.transform.parent = null;
-                Rigidbody rb = currentArrow.GetComponent<Rigidbody>();
-                rb.isKinematic = false;
-                rb.linearVelocity = arrowSpawnPoint.forward * currentForce;
-            }
-
-            animate.SetTrigger("Shoot");
-            currentArrow = null;
-            isCharging = false;
-        }
+        // Firing
+        animate.SetBool(FiringHash, fire);
     }
 }

@@ -11,20 +11,17 @@ public class WeaponController : MonoBehaviour
     [SerializeField] GameObject arrowHolder;
     [SerializeField] GameObject bowSheath;
     [SerializeField] GameObject swordSheath;
-    [SerializeField] GameObject arrowSheath;
     
     GameObject currentBow;
     GameObject currentSword;
     GameObject currentArrow;
     GameObject currentBowSheath;
     GameObject currentSwordSheath;
-    GameObject currentArrowSheath;
 
     void Start()
     {
         SheathSword();
         SheathWeapon();
-        SheathArrow();
     }
 
     // Sword
@@ -82,35 +79,6 @@ public class WeaponController : MonoBehaviour
         if (currentBowSheath == null)
         {
             currentBowSheath = Instantiate(bow, bowSheath.transform);
-        }
-    }
-
-    // Arrow
-    public void PullArrow()
-    {
-        if (currentArrow != null)
-        {
-            Destroy(currentArrow);
-            currentArrow = null; // Ensure the reference is cleared
-        }
-
-        if (currentArrow == null) 
-        {
-            currentArrow = Instantiate(arrow, arrowHolder.transform);
-        }
-    }
-    
-    public void SheathArrow()
-    {
-        if (currentArrow != null)
-        {
-            Destroy(currentArrow);
-            currentArrow = null; // Ensure the reference is cleared
-        }
-
-        if (currentArrowSheath == null)
-        {
-            currentArrowSheath = Instantiate(arrow, arrowSheath.transform);
         }
     }
 }

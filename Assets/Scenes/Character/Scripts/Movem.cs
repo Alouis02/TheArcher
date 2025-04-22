@@ -21,9 +21,9 @@ public class Movem : MonoBehaviour
     private CharacterController controller;
     private Transform cameraTransform;
 
-    [SerializeField] private Transform aimPosition; // Aim target
-    [SerializeField] private float aimSpeed = 20f;
-    [SerializeField] private LayerMask aimMask;
+    // [SerializeField] private Transform aimPosition; // Aim target
+    // [SerializeField] private float aimSpeed = 0.5f;
+    // [SerializeField] private LayerMask aimMask;
 
     void Start()
     {
@@ -37,9 +37,7 @@ public class Movem : MonoBehaviour
     void Update()
     {
         Move();
-        UpdateAimPosition();
-        RotatePlayerToMouse();
-
+ 
         // Unlock the cursor for debugging or menus
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -95,42 +93,6 @@ public class Movem : MonoBehaviour
         // Apply gravity
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
-    }
-
-    private void UpdateAimPosition()
-    {
-        // Use a raycast from the center of the screen to update the aim position
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        float maxAimDistance = 100f; // Limit raycast distance
-
-        if (Physics.Raycast(ray, out RaycastHit hit, maxAimDistance, aimMask))
-        {
-            aimPosition.position = Vector3.Lerp(aimPosition.position, hit.point, aimSpeed * Time.deltaTime);
-        }
-    }
-
-    private void RotatePlayerToMouse()
-    {
-        // Rotate the player only when the right mouse button is pressed
-        if (Input.GetMouseButton(1)) // Right mouse button
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, aimMask))
-            {
-                Vector3 targetPosition = hit.point;
-                targetPosition.y = transform.position.y; // Keep player rotation level
-
-                Vector3 direction = (targetPosition - transform.position).normalized;
-
-                // Rotate the player to face the mouse pointer
-                if (direction.magnitude >= 0.1f)
-                {
-                    Quaternion targetRotation = Quaternion.LookRotation(direction);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
-                }
-            }
-        }
     }
 
     private void SetCursorState(bool locked)
