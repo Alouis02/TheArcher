@@ -85,7 +85,7 @@ public class Controller : MonoBehaviour
 
     void HandleActions()
     {
-        bool punch = Input.GetKeyDown("e");
+        bool punch = Input.GetKey("e");
         bool kick = Input.GetKeyDown("r");
         bool aim = Input.GetMouseButton(1);
         bool fire = Input.GetMouseButton(0);
