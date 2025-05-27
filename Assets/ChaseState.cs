@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections.Generic;
+using System.Collections;
 
 public class ChaseState : StateMachineBehaviour
 {
@@ -10,7 +11,7 @@ public class ChaseState : StateMachineBehaviour
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         agent = animator.GetComponent<NavMeshAgent>();
-        player = GameObject.FindWithTag("Player").transform;
+        player = GameObject.FindGameObjectWithTag("Player").transform;
         agent.speed = 3.5f;
     }
 
@@ -22,7 +23,7 @@ public class ChaseState : StateMachineBehaviour
         if (distance > 15) {
             animator.SetBool("IsChasing", false);
         }
-        if (distance < 2.5f) {
+        if (distance < 5) {
             animator.SetBool("IsAttacking", true);
         }
     }

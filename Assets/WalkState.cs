@@ -12,7 +12,7 @@ public class WalkState : StateMachineBehaviour
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        player = GameObject.FindWithTag("Player").transform;
+        player = GameObject.FindGameObjectWithTag("Player").transform;
         agent = animator.GetComponent<NavMeshAgent>();
         agent.speed = 1.5f;
         timer = 0;
@@ -33,9 +33,12 @@ public class WalkState : StateMachineBehaviour
         if (timer > 10) {
             animator.SetBool("IsPatrolling", false);
         }
-        float distance = Vector3.Distance(player.position, animator.transform.position);
-        if (distance < range) {
-            animator.SetBool("IsChasing", true);
+
+        if (player != null) {
+            float distance = Vector3.Distance(player.position, animator.transform.position);
+            if (distance < range) {
+                animator.SetBool("IsChasing", true);
+            }
         }
     }
 
